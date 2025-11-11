@@ -1,0 +1,126 @@
+<ion-content [fullscreen]="true" class="signup-content">
+  <div class="signup-container">
+    <div class="signup-card">
+      <div class="signup-header">
+        <ion-icon name="school-outline" class="form-icon"></ion-icon>
+        <h2>Become a Tutor</h2>
+        <p>Share your expertise</p>
+      </div>
+
+      <form class="signup-form">
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-input 
+            type="text" 
+            placeholder="First Name" 
+            [(ngModel)]="firstName"
+            name="firstName"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-input 
+            type="text" 
+            placeholder="Last Name" 
+            [(ngModel)]="lastName"
+            name="lastName"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input 
+            type="email" 
+            placeholder="Email" 
+            [(ngModel)]="email"
+            name="email"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          <ion-input 
+            type="tel" 
+            placeholder="Phone Number" 
+            [(ngModel)]="phone"
+            name="phone">
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="book-outline" slot="start"></ion-icon>
+          <ion-input 
+            type="text" 
+            placeholder="Subjects (comma-separated)" 
+            [(ngModel)]="subjects"
+            name="subjects"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="cash-outline" slot="start"></ion-icon>
+          <ion-input 
+            type="number" 
+            placeholder="Hourly Rate (₱)" 
+            [(ngModel)]="hourlyRate"
+            name="hourlyRate"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-input 
+            [type]="showPassword ? 'text' : 'password'" 
+            placeholder="Password" 
+            [(ngModel)]="password"
+            name="password"
+            required>
+          </ion-input>
+          <ion-icon 
+            [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" 
+            slot="end" 
+            (click)="togglePassword()"
+            class="password-toggle">
+          </ion-icon>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-input 
+            [type]="showConfirmPassword ? 'text' : 'password'" 
+            placeholder="Confirm Password" 
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            required>
+          </ion-input>
+          <ion-icon 
+            [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'" 
+            slot="end" 
+            (click)="toggleConfirmPassword()"
+            class="password-toggle">
+          </ion-icon>
+        </ion-item>
+
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <ion-button expand="block" size="large" class="signup-btn" (click)="onSignup()">
+          Create Account
+        </ion-button>
+      </form>
+
+      <div class="login-link">
+        <p>Already have an account? 
+          <a (click)="navigateToLogin()">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</ion-content>

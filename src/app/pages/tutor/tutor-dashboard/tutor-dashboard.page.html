@@ -1,0 +1,169 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onLogout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="tutor-dashboard-content">
+  <div class="dashboard-container" *ngIf="profile">
+    
+    <!-- Welcome Header -->
+    <div class="welcome-header">
+      <div class="avatar-small">
+        <img *ngIf="profile.photoURL" [src]="profile.photoURL" alt="Profile">
+        <ion-icon *ngIf="!profile.photoURL" name="person-circle"></ion-icon>
+      </div>
+      <div class="welcome-text">
+        <h1>Welcome back, {{ profile.firstName }}!</h1>
+        <p>Here's what's happening today</p>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <ion-card class="stat-card" (click)="viewStudents()">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <ion-icon name="people"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stats.totalStudents }}</h3>
+          <p>Total Students</p>
+        </div>
+      </ion-card>
+
+      <ion-card class="stat-card" (click)="viewRequests()">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+          <ion-icon name="mail"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stats.activeRequests }}</h3>
+          <p>New Requests</p>
+        </div>
+      </ion-card>
+
+      <ion-card class="stat-card" (click)="manageSchedule()">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+          <ion-icon name="calendar"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stats.completedSessions }}</h3>
+          <p>Sessions Done</p>
+        </div>
+      </ion-card>
+
+      <ion-card class="stat-card" (click)="viewEarnings()">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+          <ion-icon name="cash"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <h3>₱{{ stats.monthlyEarnings.toLocaleString() }}</h3>
+          <p>This Month</p>
+        </div>
+      </ion-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <ion-card class="section-card">
+      <ion-card-header>
+        <ion-card-title>Quick Actions</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="actions-grid">
+          <div class="action-item" (click)="editProfile()">
+            <div class="action-icon">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <span>Edit Profile</span>
+          </div>
+          <div class="action-item" (click)="manageSchedule()">
+            <div class="action-icon">
+              <ion-icon name="time-outline"></ion-icon>
+            </div>
+            <span>Schedule</span>
+          </div>
+          <div class="action-item" (click)="viewRequests()">
+            <div class="action-icon">
+              <ion-icon name="mail-unread-outline"></ion-icon>
+            </div>
+            <span>Requests</span>
+          </div>
+          <div class="action-item" (click)="viewEarnings()">
+            <div class="action-icon">
+              <ion-icon name="stats-chart-outline"></ion-icon>
+            </div>
+            <span>Analytics</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Profile Summary -->
+    <ion-card class="section-card profile-summary">
+      <ion-card-header>
+        <ion-card-title>Your Profile</ion-card-title>
+        <ion-button fill="clear" size="small" (click)="editProfile()">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="profile-row">
+          <ion-icon name="star" color="warning"></ion-icon>
+          <span class="label">Rating:</span>
+          <span class="value">{{ stats.averageRating }} ⭐ ({{ stats.totalReviews }} reviews)</span>
+        </div>
+        <div class="profile-row">
+          <ion-icon name="cash-outline" color="success"></ion-icon>
+          <span class="label">Hourly Rate:</span>
+          <span class="value">₱{{ profile.hourlyRate || 0 }}/hour</span>
+        </div>
+        <div class="profile-row">
+          <ion-icon name="book-outline" color="primary"></ion-icon>
+          <span class="label">Subjects:</span>
+          <div class="subjects-inline">
+            <ion-chip *ngFor="let subject of profile.subjects" size="small" color="primary">
+              {{ subject }}
+            </ion-chip>
+          </div>
+        </div>
+        <div class="profile-row" *ngIf="profile.education">
+          <ion-icon name="school-outline" color="tertiary"></ion-icon>
+          <span class="label">Education:</span>
+          <span class="value">{{ profile.education }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Recent Activity -->
+    <ion-card class="section-card">
+      <ion-card-header>
+        <ion-card-title>Recent Activity</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list lines="none" class="activity-list">
+          <ion-item *ngFor="let activity of recentActivity" class="activity-item">
+            <div class="activity-icon" [style.background]="'var(--ion-color-' + activity.color + ')'">
+              <ion-icon [name]="activity.icon"></ion-icon>
+            </div>
+            <ion-label>
+              <h3>{{ activity.title }}</h3>
+              <p>{{ activity.description }}</p>
+              <p class="time-text">{{ activity.time }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="!profile">
+    <ion-spinner color="primary"></ion-spinner>
+    <p>Loading dashboard...</p>
+  </div>
+</ion-content>

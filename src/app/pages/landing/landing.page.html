@@ -1,0 +1,147 @@
+<ion-content [fullscreen]="true" class="landing-content">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <ion-icon name="school-outline" class="hero-logo"></ion-icon>
+        <h1 class="hero-title">Find Your Perfect Tutor</h1>
+        <p class="hero-subtitle">Connect with qualified tutors for personalized learning</p>
+        <div class="cta-buttons">
+          <ion-button expand="block" size="large" class="primary-btn" (click)="navigateToLogin()">
+            Login
+          </ion-button>
+          <ion-button expand="block" size="large" fill="outline" class="secondary-btn" (click)="navigateToSignup()">
+            Sign Up
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works Section -->
+  <div class="section" id="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <ion-icon name="search-outline" class="feature-icon"></ion-icon>
+        <h3>Browse Tutors</h3>
+        <p>Swipe through qualified tutors in your area</p>
+      </div>
+      <div class="feature-card">
+        <ion-icon name="heart-outline" class="feature-icon"></ion-icon>
+        <h3>Match & Connect</h3>
+        <p>Like tutors that fit your learning needs</p>
+      </div>
+      <div class="feature-card">
+        <ion-icon name="calendar-outline" class="feature-icon"></ion-icon>
+        <h3>Schedule Sessions</h3>
+        <p>Book lessons at your convenience</p>
+      </div>
+      <div class="feature-card">
+        <ion-icon name="school-outline" class="feature-icon"></ion-icon>
+        <h3>Learn & Grow</h3>
+        <p>Achieve your academic goals</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Subjects Section -->
+  <div class="section alt-bg">
+    <h2 class="section-title">Most In-Demand Subjects</h2>
+    <p class="section-description">Find expert tutors in the Philippines' top subjects</p>
+    <div class="chart-container">
+      <div class="line-chart">
+        <!-- Y-axis labels -->
+        <div class="y-axis">
+          <span>100%</span>
+          <span>75%</span>
+          <span>50%</span>
+          <span>25%</span>
+          <span>0%</span>
+        </div>
+        
+        <!-- Chart area -->
+        <div class="chart-area">
+          <!-- Grid lines -->
+          <div class="grid-lines">
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+          </div>
+          
+          <!-- SVG for line -->
+          <svg class="line-svg" viewBox="0 0 500 300" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.05" />
+              </linearGradient>
+            </defs>
+            
+            <!-- Area under line -->
+            <path class="line-area" d="M 0 45 L 125 75 L 250 90 L 375 105 L 500 120 L 500 300 L 0 300 Z" fill="url(#areaGradient)" />
+            
+            <!-- Line path -->
+            <path class="line-path" d="M 0 45 L 125 75 L 250 90 L 375 105 L 500 120" fill="none" stroke="url(#lineGradient)" stroke-width="3" />
+            
+            <!-- Data points -->
+            <circle cx="0" cy="45" r="5" class="data-point" />
+            <circle cx="125" cy="75" r="5" class="data-point" />
+            <circle cx="250" cy="90" r="5" class="data-point" />
+            <circle cx="375" cy="105" r="5" class="data-point" />
+            <circle cx="500" cy="120" r="5" class="data-point" />
+          </svg>
+          
+          <!-- Data labels -->
+          <div class="data-labels">
+            <div class="data-label" style="left: 0%">
+              <span class="value">85%</span>
+            </div>
+            <div class="data-label" style="left: 25%">
+              <span class="value">75%</span>
+            </div>
+            <div class="data-label" style="left: 50%">
+              <span class="value">70%</span>
+            </div>
+            <div class="data-label" style="left: 75%">
+              <span class="value">65%</span>
+            </div>
+            <div class="data-label" style="left: 100%">
+              <span class="value">60%</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- X-axis labels -->
+        <div class="x-axis">
+          <span>Mathematics</span>
+          <span>English</span>
+          <span>Science</span>
+          <span>Filipino</span>
+          <span>Programming</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- For Tutors Section -->
+  <div class="section alt-bg">
+    <h2 class="section-title">Are You a Tutor?</h2>
+    <p class="section-description">Join our platform and connect with students who need your expertise</p>
+    <ion-button expand="block" size="large" class="tutor-btn" (click)="navigateToSignup()">
+      Become a Tutor
+      <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>&copy; 2025 Finding Tutor. All rights reserved.</p>
+  </div>
+</ion-content>

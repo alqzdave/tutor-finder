@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Find Tutors</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onLogout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <div class="cards-container">
+    <!-- No More Tutors -->
+    <div class="no-tutors" *ngIf="!currentTutor">
+      <ion-icon name="checkmark-circle-outline" class="check-icon"></ion-icon>
+      <h2>No More Tutors</h2>
+      <p>Check back later for more tutors!</p>
+    </div>
+
+    <!-- Tutor Card -->
+    <div class="tutor-card" 
+         *ngIf="currentTutor"
+         [ngStyle]="currentCardStyle"
+         (pan)="onPan($event)"
+         (panend)="onPanEnd($event)">
+      
+      <div class="card-header">
+        <div class="tutor-image">
+          <img *ngIf="currentTutor.photoURL" [src]="currentTutor.photoURL" alt="Tutor Photo" />
+          <ion-icon *ngIf="!currentTutor.photoURL" name="person-circle-outline"></ion-icon>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2 class="tutor-name">{{ currentTutor.firstName }} {{ currentTutor.lastName }}</h2>
+        
+        <div class="tutor-info">
+          <div class="info-item">
+            <ion-icon name="cash-outline"></ion-icon>
+            <span>₱{{ currentTutor.hourlyRate }}/hour</span>
+          </div>
+          <div class="info-item" *ngIf="currentTutor.education">
+            <ion-icon name="school-outline"></ion-icon>
+            <span>{{ currentTutor.education }}</span>
+          </div>
+        </div>
+
+        <div class="subjects">
+          <ion-chip *ngFor="let subject of currentTutor.subjects" color="primary">
+            {{ subject }}
+          </ion-chip>
+        </div>
+
+        <p class="tutor-bio" *ngIf="currentTutor.bio">{{ currentTutor.bio }}</p>
+      </div>
+
+      <!-- Swipe Indicators -->
+      <div class="swipe-indicator reject">
+        <ion-icon name="close-circle"></ion-icon>
+        <span>PASS</span>
+      </div>
+      <div class="swipe-indicator like">
+        <ion-icon name="heart-circle"></ion-icon>
+        <span>LIKE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons" *ngIf="currentTutor">
+    <ion-button class="reject-btn" shape="round" (click)="animateSwipe('left')">
+      <ion-icon slot="icon-only" name="close"></ion-icon>
+    </ion-button>
+    <ion-button class="like-btn" shape="round" (click)="animateSwipe('right')">
+      <ion-icon slot="icon-only" name="heart"></ion-icon>
+    </ion-button>
+  </div>
+</ion-content>
