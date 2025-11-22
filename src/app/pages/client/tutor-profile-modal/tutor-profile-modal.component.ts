@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -7,47 +7,58 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./tutor-profile-modal.component.scss'],
   standalone: false
 })
-export class TutorProfileModalComponent {
+export class TutorProfileModalComponent implements OnInit {
   @Input() tutor: any;
 
-  // Extended tutor data for the full profile
-  tutorProfile = {
-    experience: '8 years of teaching experience',
-    subjects: ['Mathematics', 'Physics', 'Statistics', 'Calculus'],
-    education: 'Master of Science in Mathematics Education',
-    teachingStyle: 'I focus on building strong foundational understanding through interactive problem-solving and real-world applications. My approach is student-centered and adaptable to different learning styles.',
-    schedule: [
-      { day: 'Monday', time: '2:00 PM - 6:00 PM', available: true },
-      { day: 'Tuesday', time: '2:00 PM - 6:00 PM', available: true },
-      { day: 'Wednesday', time: '2:00 PM - 6:00 PM', available: true },
-      { day: 'Thursday', time: '2:00 PM - 6:00 PM', available: true },
-      { day: 'Friday', time: '2:00 PM - 6:00 PM', available: true },
-      { day: 'Saturday', time: '9:00 AM - 5:00 PM', available: true },
-      { day: 'Sunday', time: 'Not Available', available: false }
-    ],
-    reviews: [
-      {
-        studentName: 'Juan Dela Cruz',
-        rating: 5,
-        comment: 'Excellent tutor! Very patient and explains concepts clearly. Highly recommended!',
-        date: '2 weeks ago'
-      },
-      {
-        studentName: 'Maria Santos',
-        rating: 5,
-        comment: 'Best math tutor I\'ve ever had. Made difficult topics easy to understand.',
-        date: '1 month ago'
-      },
-      {
-        studentName: 'Pedro Reyes',
-        rating: 4,
-        comment: 'Great teaching style and very knowledgeable. Would book again.',
-        date: '2 months ago'
-      }
-    ]
-  };
+  // This will be populated from the actual tutor data
+  tutorProfile: any = {};
 
   constructor(private modalController: ModalController) {}
+
+  ngOnInit() {
+    // Populate profile from actual tutor data
+    this.tutorProfile = {
+      experience: this.tutor?.experienceDescription || this.tutor?.experience || 'No experience information provided',
+      experienceYears: this.tutor?.experienceYears || 0,
+      subjects: this.tutor?.subjectsTaught || this.tutor?.subjects || [],
+      education: this.tutor?.education || 'Not specified',
+      teachingStyle: this.tutor?.teachingStyle || 'No teaching style description provided',
+      bio: this.tutor?.bio || 'No bio provided',
+      specialization: this.tutor?.specialization || this.tutor?.subject || 'General Tutor',
+      hourlyRate: this.tutor?.hourlyRate || this.tutor?.priceRange || 'Contact for pricing',
+      preferredMode: this.tutor?.preferences?.preferredMode || 'Both',
+      availableSchedule: this.tutor?.preferences?.availableSchedule || [],
+      schedule: this.generateScheduleFromAvailability(),
+      reviews: this.tutor?.reviews || []
+    };
+  }
+
+  generateScheduleFromAvailability() {
+    const availableSchedule = this.tutor?.preferences?.availableSchedule || [];
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    
+    // Map schedule preferences to time slots
+    const timeMap: any = {
+      'Morning': '9:00 AM - 12:00 PM',
+      'Afternoon': '2:00 PM - 6:00 PM',
+      'Evening': '6:00 PM - 9:00 PM'
+    };
+
+    return days.map(day => {
+      let times: string[] = [];
+      availableSchedule.forEach((slot: string) => {
+        if (timeMap[slot]) {
+          times.push(timeMap[slot]);
+        }
+      });
+
+      return {
+        day: day,
+        time: times.length > 0 ? times.join(', ') : 'Not Available',
+        available: times.length > 0
+      };
+    });
+  }
 
   closeModal() {
     this.modalController.dismiss();

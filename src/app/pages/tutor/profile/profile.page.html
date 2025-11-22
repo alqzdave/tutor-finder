@@ -14,7 +14,7 @@
     
     <div class="profile-info">
       <h2 class="profile-name">{{ profile.fullName }}</h2>
-      <p class="profile-role">{{ profile.gradeLevel }} - Student</p>
+      <p class="profile-role">{{ profile.specialization || 'Professional Tutor' }}</p>
       <p class="profile-bio-preview" *ngIf="profile.bio">{{ profile.bio }}</p>
     </div>
   </div>
@@ -147,7 +147,7 @@
     </div>
   </div>
 
-  <!-- 3. Add or Edit Bio Section -->
+  <!-- 3. About Me Section -->
   <div class="section-card">
     <div class="section-header">
       <h3>About Me</h3>
@@ -159,52 +159,48 @@
 
     <div class="bio-content" *ngIf="!isEditingBio">
       <div class="bio-section">
-        <label>Bio</label>
+        <label>Professional Bio</label>
         <p class="bio-text">{{ profile.bio || 'No bio added yet. Click Edit Bio to add one.' }}</p>
       </div>
 
       <div class="bio-section">
-        <label>Interests</label>
-        <div class="interests-tags">
-          <span class="interest-tag" *ngFor="let interest of profile.interests">{{ interest }}</span>
-          <span *ngIf="!profile.interests || profile.interests.length === 0" class="no-data">No interests added</span>
-        </div>
+        <label>Specialization</label>
+        <p class="bio-text">{{ profile.specialization || 'Not specified' }}</p>
       </div>
 
       <div class="bio-section">
-        <label>Learning Goals</label>
-        <p class="bio-text">{{ profile.learningGoals || 'No learning goals set yet.' }}</p>
+        <label>Education</label>
+        <p class="bio-text">{{ profile.education || 'No education information added yet.' }}</p>
       </div>
     </div>
 
     <!-- Edit Bio Mode -->
     <div class="edit-bio-form" *ngIf="isEditingBio">
       <ion-item>
-        <ion-label position="stacked">Bio (1-3 sentences)</ion-label>
+        <ion-label position="stacked">Professional Bio (About yourself as a tutor)</ion-label>
         <ion-textarea 
           [(ngModel)]="editedBio" 
-          rows="4" 
-          placeholder="Tell us about yourself..."
-          maxlength="300">
+          rows="5" 
+          placeholder="Tell students about your teaching background and approach..."
+          maxlength="500">
         </ion-textarea>
       </ion-item>
-      <p class="char-count">{{ editedBio.length }}/300 characters</p>
+      <p class="char-count">{{ editedBio.length }}/500 characters</p>
 
       <ion-item>
-        <ion-label position="stacked">Interests (comma-separated)</ion-label>
-        <ion-textarea 
-          [(ngModel)]="editedInterests" 
-          rows="2" 
-          placeholder="e.g., Math, Science, English, Programming">
-        </ion-textarea>
+        <ion-label position="stacked">Specialization/Title</ion-label>
+        <ion-input 
+          [(ngModel)]="editedSpecialization" 
+          placeholder="e.g., Mathematics Teacher, English Tutor">
+        </ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked">Learning Goals</ion-label>
+        <ion-label position="stacked">Education & Qualifications</ion-label>
         <ion-textarea 
-          [(ngModel)]="editedGoals" 
+          [(ngModel)]="editedEducation" 
           rows="3" 
-          placeholder="What do you want to achieve?">
+          placeholder="e.g., BS Mathematics, University of Manila">
         </ion-textarea>
       </ion-item>
 
@@ -219,71 +215,137 @@
     </div>
   </div>
 
-  <!-- 4. Preferences Section -->
+  <!-- 4. Experience & Teaching Section -->
   <div class="section-card">
     <div class="section-header">
-      <h3>Preferences</h3>
-      <ion-button *ngIf="!isEditingPreferences" fill="clear" size="small" (click)="toggleEditPreferences()">
+      <h3>Experience & Teaching Style</h3>
+      <ion-button *ngIf="!isEditingExperience" fill="clear" size="small" (click)="toggleEditExperience()">
         <ion-icon slot="start" name="create"></ion-icon>
-        Edit Preferences
+        Edit
       </ion-button>
     </div>
 
-    <div class="preferences-content" *ngIf="!isEditingPreferences">
-      <div class="pref-item">
-        <ion-icon name="book" class="pref-icon"></ion-icon>
-        <div class="pref-details">
-          <label>Preferred Subjects</label>
-          <div class="schedule-tags">
-            <span class="schedule-tag" *ngFor="let subject of profile.preferredSubjects">{{ subject }}</span>
-            <span *ngIf="!profile.preferredSubjects || profile.preferredSubjects.length === 0" class="no-data">No subjects selected</span>
+    <div class="experience-content" *ngIf="!isEditingExperience">
+      <div class="exp-item">
+        <ion-icon name="time-outline" class="exp-icon"></ion-icon>
+        <div class="exp-details">
+          <label>Years of Experience</label>
+          <p>{{ profile.experienceYears || 0 }} years</p>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <ion-icon name="briefcase-outline" class="exp-icon"></ion-icon>
+        <div class="exp-details">
+          <label>Teaching Experience</label>
+          <p>{{ profile.experienceDescription || 'No experience description added yet.' }}</p>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <ion-icon name="bulb-outline" class="exp-icon"></ion-icon>
+        <div class="exp-details">
+          <label>Teaching Style</label>
+          <p>{{ profile.teachingStyle || 'No teaching style description added yet.' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Experience Mode -->
+    <div class="edit-experience-form" *ngIf="isEditingExperience">
+      <ion-item>
+        <ion-label position="stacked">Years of Experience</ion-label>
+        <ion-input 
+          [(ngModel)]="editedExperienceYears" 
+          type="number" 
+          placeholder="e.g., 5">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Teaching Experience Description</ion-label>
+        <ion-textarea 
+          [(ngModel)]="editedExperienceDescription" 
+          rows="4" 
+          placeholder="Describe your teaching background, institutions, and achievements...">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Teaching Style & Methodology</ion-label>
+        <ion-textarea 
+          [(ngModel)]="editedTeachingStyle" 
+          rows="4" 
+          placeholder="Describe your teaching approach, methods, and how you engage students...">
+        </ion-textarea>
+      </ion-item>
+
+      <div class="edit-actions">
+        <ion-button expand="block" color="medium" fill="outline" (click)="cancelEditExperience()">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" color="primary" (click)="saveExperience()">
+          Save Experience
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Subjects & Preferences Section -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>Subjects & Preferences</h3>
+      <ion-button *ngIf="!isEditingSubjects" fill="clear" size="small" (click)="toggleEditSubjects()">
+        <ion-icon slot="start" name="create"></ion-icon>
+        Edit
+      </ion-button>
+    </div>
+
+    <div class="subjects-content" *ngIf="!isEditingSubjects">
+      <div class="subj-item">
+        <ion-icon name="book-outline" class="subj-icon"></ion-icon>
+        <div class="subj-details">
+          <label>Subjects Taught</label>
+          <div class="subject-tags">
+            <span class="subject-tag" *ngFor="let subject of profile.subjectsTaught">{{ subject }}</span>
+            <span *ngIf="!profile.subjectsTaught || profile.subjectsTaught.length === 0" class="no-data">No subjects added</span>
           </div>
         </div>
       </div>
 
-      <div class="pref-item">
-        <ion-icon name="person" class="pref-icon"></ion-icon>
-        <div class="pref-details">
-          <label>Preferred Tutor Gender</label>
-          <p>{{ profile.preferences?.preferredTutorGender || 'Any' }}</p>
+      <div class="subj-item">
+        <ion-icon name="cash-outline" class="subj-icon"></ion-icon>
+        <div class="subj-details">
+          <label>Hourly Rate</label>
+          <p>₱{{ profile.hourlyRate || 0 }} per hour</p>
         </div>
       </div>
 
-      <div class="pref-item">
-        <ion-icon name="cash" class="pref-icon"></ion-icon>
-        <div class="pref-details">
-          <label>Price Range</label>
-          <p>₱{{ profile.preferences?.minPrice || 100 }} - ₱{{ profile.preferences?.maxPrice || 1000 }} per hour</p>
-        </div>
-      </div>
-
-      <div class="pref-item">
-        <div class="pref-label">
-          <ion-icon name="globe-outline"></ion-icon>
-          <span>Preferred Mode</span>
-        </div>
-        <div class="pref-value">
+      <div class="subj-item">
+        <ion-icon name="globe-outline" class="subj-icon"></ion-icon>
+        <div class="subj-details">
+          <label>Preferred Mode</label>
           <p>{{ profile.preferences?.preferredMode || 'Both' }}</p>
         </div>
       </div>
 
-      <div class="pref-item">
-        <ion-icon name="time" class="pref-icon"></ion-icon>
-        <div class="pref-details">
-          <label>Preferred Schedule</label>
+      <div class="subj-item">
+        <ion-icon name="time-outline" class="subj-icon"></ion-icon>
+        <div class="subj-details">
+          <label>Available Schedule</label>
           <div class="schedule-tags">
-            <span class="schedule-tag" *ngFor="let schedule of profile.preferences?.preferredSchedule">{{ schedule }}</span>
-            <span *ngIf="!profile.preferences?.preferredSchedule || profile.preferences?.preferredSchedule?.length === 0" class="no-data">No schedule preference set</span>
+            <span class="schedule-tag" *ngFor="let schedule of profile.preferences?.availableSchedule">{{ schedule }}</span>
+            <span *ngIf="!profile.preferences?.availableSchedule || profile.preferences?.availableSchedule?.length === 0" class="no-data">No schedule set</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Edit Preferences Mode -->
-    <div class="edit-preferences-form" *ngIf="isEditingPreferences">
+    <!-- Edit Subjects Mode -->
+    <div class="edit-subjects-form" *ngIf="isEditingSubjects">
       <ion-item>
-        <ion-label position="stacked">Preferred Subjects</ion-label>
-        <ion-select [(ngModel)]="editedPreferences.preferredSubjects" multiple="true" placeholder="Select subjects">
+        <ion-label position="stacked">Subjects Taught</ion-label>
+        <ion-select [(ngModel)]="editedSubjects" multiple="true" placeholder="Select subjects you teach">
           <ion-select-option value="Mathematics">Mathematics</ion-select-option>
           <ion-select-option value="English">English</ion-select-option>
           <ion-select-option value="Science">Science</ion-select-option>
@@ -306,37 +368,29 @@
         <ion-label position="stacked">Other Subject(s) - separate with commas</ion-label>
         <ion-input 
           [(ngModel)]="otherSubjects" 
-          placeholder="e.g., Photography, Guitar, Cooking"
+          placeholder="e.g., Photography, Guitar, Japanese Language"
           (ionChange)="updateOtherSubjects()">
         </ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked">Preferred Tutor Gender</ion-label>
-        <ion-select [(ngModel)]="editedPreferences.preferredTutorGender" placeholder="Select gender preference">
-          <ion-select-option *ngFor="let gender of tutorGenderOptions" [value]="gender">{{ gender }}</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Minimum Price (₱/hour)</ion-label>
-        <ion-input [(ngModel)]="editedPreferences.minPrice" type="number" placeholder="100"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Maximum Price (₱/hour)</ion-label>
-        <ion-input [(ngModel)]="editedPreferences.maxPrice" type="number" placeholder="1000"></ion-input>
+        <ion-label position="stacked">Hourly Rate (₱)</ion-label>
+        <ion-input 
+          [(ngModel)]="editedHourlyRate" 
+          type="number" 
+          placeholder="e.g., 500">
+        </ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Preferred Mode</ion-label>
-        <ion-select [(ngModel)]="editedPreferences.preferredMode" placeholder="Select preferred mode">
+        <ion-select [(ngModel)]="editedPreferredMode" placeholder="Select teaching mode">
           <ion-select-option *ngFor="let mode of modeOptions" [value]="mode">{{ mode }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <div class="schedule-selector">
-        <label>Preferred Schedule Availability</label>
+        <label>Available Schedule</label>
         <div class="schedule-chips">
           <ion-chip 
             *ngFor="let schedule of scheduleOptions" 
@@ -349,17 +403,17 @@
       </div>
 
       <div class="edit-actions">
-        <ion-button expand="block" color="medium" fill="outline" (click)="cancelEditPreferences()">
+        <ion-button expand="block" color="medium" fill="outline" (click)="cancelEditSubjects()">
           Cancel
         </ion-button>
-        <ion-button expand="block" color="primary" (click)="savePreferences()">
-          Save Preferences
+        <ion-button expand="block" color="primary" (click)="saveSubjects()">
+          Save Subjects
         </ion-button>
       </div>
     </div>
   </div>
 
-  <!-- 5. Account Management Section -->
+  <!-- 6. Account Management Section -->
   <div class="section-card">
     <div class="section-header">
       <h3>Account Management</h3>
@@ -419,21 +473,30 @@
 <!-- Bottom Tab Navigation -->
 <ion-footer>
   <ion-toolbar class="bottom-tabs">
-    <div class="tab-container">
+    <div class="tab-buttons">
       <div class="tab-item" (click)="onTabHome()">
-        <ion-icon name="home-outline"></ion-icon>
+        <div class="tab-icon-wrapper">
+          <ion-icon name="home-outline"></ion-icon>
+        </div>
         <span>Home</span>
       </div>
-      <div class="tab-item" (click)="onTabFindTutor()">
-        <ion-icon name="search-outline"></ion-icon>
-        <span>Find Tutor</span>
+      <div class="tab-item" (click)="onTabFindStudents()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="search-outline"></ion-icon>
+        </div>
+        <span>Find Students</span>
       </div>
       <div class="tab-item" (click)="onTabMessages()">
-        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <div class="tab-icon-wrapper">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-badge color="danger" class="message-badge">2</ion-badge>
+        </div>
         <span>Messages</span>
       </div>
-      <div class="tab-item active" (click)="onTabProfile()">
-        <ion-icon name="person"></ion-icon>
+      <div class="tab-item active">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="person"></ion-icon>
+        </div>
         <span>Profile</span>
       </div>
     </div>

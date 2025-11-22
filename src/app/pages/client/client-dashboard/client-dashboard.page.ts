@@ -210,7 +210,7 @@ export class ClientDashboardPage implements OnInit {
 
   async onProfile() {
     console.log('Profile clicked');
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/client/profile']);
   }
 
   async onLogout() {

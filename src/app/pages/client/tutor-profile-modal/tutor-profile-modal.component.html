@@ -74,6 +74,18 @@
     <p>{{ tutorProfile.teachingStyle }}</p>
   </div>
 
+  <!-- Preferred Mode -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="globe-outline"></ion-icon>
+      Preferred Mode
+    </h3>
+    <ion-chip [color]="tutorProfile.preferredMode === 'Online' ? 'primary' : tutorProfile.preferredMode === 'Face-to-face' ? 'success' : 'secondary'">
+      <ion-icon [name]="tutorProfile.preferredMode === 'Online' ? 'videocam-outline' : tutorProfile.preferredMode === 'Face-to-face' ? 'people-outline' : 'apps-outline'"></ion-icon>
+      <ion-label>{{ tutorProfile.preferredMode }}</ion-label>
+    </ion-chip>
+  </div>
+
   <!-- Schedule Availability -->
   <div class="profile-section">
     <h3>

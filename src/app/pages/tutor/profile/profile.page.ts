@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ActionSheetController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth';
-import { ClientProfile } from '../../../models/user.model';
+import { TutorProfile } from '../../../models/user.model';
 
 @Component({
   selector: 'app-profile',
@@ -11,10 +11,10 @@ import { ClientProfile } from '../../../models/user.model';
   standalone: false
 })
 export class ProfilePage implements OnInit {
-  profile: ClientProfile = {
+  profile: TutorProfile = {
     uid: '',
     email: '',
-    role: 'client',
+    role: 'tutor',
     firstName: '',
     lastName: '',
     fullName: '',
@@ -26,29 +26,38 @@ export class ProfilePage implements OnInit {
     city: '',
     province: '',
     photoURL: '',
-    gradeLevel: '',
     bio: '',
-    interests: [],
-    learningGoals: '',
-    preferredSubjects: [],
-    budget: 0,
+    subjects: [],
+    subjectsTaught: [],
+    hourlyRate: 0,
+    education: '',
+    experienceYears: 0,
+    experienceDescription: '',
+    teachingStyle: '',
+    specialization: '',
     createdAt: new Date()
   };
 
   isEditMode = false;
   isEditingBio = false;
-  isEditingPreferences = false;
+  isEditingExperience = false;
+  isEditingSubjects = false;
 
   // Temporary variables for editing
   editedProfile: any = {};
   editedBio: string = '';
-  editedInterests: string = '';
-  editedGoals: string = '';
-  editedPreferences: any = {};
+  editedSpecialization: string = '';
+  editedEducation: string = '';
+  editedExperienceYears: number = 0;
+  editedExperienceDescription: string = '';
+  editedTeachingStyle: string = '';
+  editedSubjects: string[] = [];
+  editedHourlyRate: number = 0;
+  editedPreferredMode: string = 'Both';
+  editedAvailableSchedule: string[] = [];
   otherSubjects: string = '';
 
   genderOptions = ['Male', 'Female', 'Other', 'Prefer not to say'];
-  tutorGenderOptions = ['Any', 'Male', 'Female'];
   scheduleOptions = ['Morning', 'Afternoon', 'Evening'];
   modeOptions = ['Online', 'Face-to-face', 'Both'];
 
@@ -69,7 +78,14 @@ export class ProfilePage implements OnInit {
       if (currentUser) {
         const userProfile = await this.authService.getUserProfile(currentUser.uid);
         if (userProfile) {
-          this.profile = userProfile as ClientProfile;
+          this.profile = userProfile as TutorProfile;
+          // Initialize preferences if not exists
+          if (!this.profile.preferences) {
+            this.profile.preferences = {
+              preferredMode: 'Both',
+              availableSchedule: []
+            };
+          }
         }
       }
     } catch (error) {
@@ -116,9 +132,9 @@ export class ProfilePage implements OnInit {
     await actionSheet.present();
   }
 
+  // Personal Information Methods
   toggleEditMode() {
     if (!this.isEditMode) {
-      // Entering edit mode - copy current values
       this.editedProfile = { ...this.profile };
     }
     this.isEditMode = !this.isEditMode;
@@ -131,10 +147,8 @@ export class ProfilePage implements OnInit {
 
   async savePersonalInfo() {
     try {
-      // Update profile with edited values
       Object.assign(this.profile, this.editedProfile);
       
-      // Save to Firebase
       await this.authService.updateUserProfile(this.profile.uid, this.profile);
       
       const alert = await this.alertController.create({
@@ -157,12 +171,12 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  // Bio Section Methods
   toggleEditBio() {
     if (!this.isEditingBio) {
-      // Entering edit mode - copy current values
       this.editedBio = this.profile.bio || '';
-      this.editedInterests = this.profile.interests?.join(', ') || '';
-      this.editedGoals = this.profile.learningGoals || '';
+      this.editedSpecialization = this.profile.specialization || '';
+      this.editedEducation = this.profile.education || '';
     }
     this.isEditingBio = !this.isEditingBio;
   }
@@ -170,22 +184,20 @@ export class ProfilePage implements OnInit {
   cancelEditBio() {
     this.isEditingBio = false;
     this.editedBio = '';
-    this.editedInterests = '';
-    this.editedGoals = '';
+    this.editedSpecialization = '';
+    this.editedEducation = '';
   }
 
   async saveBio() {
     try {
-      // Update bio information
       this.profile.bio = this.editedBio;
-      this.profile.interests = this.editedInterests.split(',').map(i => i.trim()).filter(i => i);
-      this.profile.learningGoals = this.editedGoals;
+      this.profile.specialization = this.editedSpecialization;
+      this.profile.education = this.editedEducation;
       
-      // Save to Firebase
       await this.authService.updateUserProfile(this.profile.uid, {
         bio: this.profile.bio,
-        interests: this.profile.interests,
-        learningGoals: this.profile.learningGoals
+        specialization: this.profile.specialization,
+        education: this.profile.education
       });
       
       const alert = await this.alertController.create({
@@ -197,8 +209,8 @@ export class ProfilePage implements OnInit {
       
       this.isEditingBio = false;
       this.editedBio = '';
-      this.editedInterests = '';
-      this.editedGoals = '';
+      this.editedSpecialization = '';
+      this.editedEducation = '';
     } catch (error) {
       console.error('Error saving bio:', error);
       const alert = await this.alertController.create({
@@ -210,101 +222,144 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  goBack() {
-    this.router.navigate(['/client-dashboard']);
+  // Experience Section Methods
+  toggleEditExperience() {
+    if (!this.isEditingExperience) {
+      this.editedExperienceYears = this.profile.experienceYears || 0;
+      this.editedExperienceDescription = this.profile.experienceDescription || '';
+      this.editedTeachingStyle = this.profile.teachingStyle || '';
+    }
+    this.isEditingExperience = !this.isEditingExperience;
   }
 
-  toggleEditPreferences() {
-    if (!this.isEditingPreferences) {
-      // Entering edit mode - copy current values
-      this.editedPreferences = {
-        preferredSubjects: this.profile.preferredSubjects || [],
-        preferredTutorGender: this.profile.preferences?.preferredTutorGender || 'Any',
-        minPrice: this.profile.preferences?.minPrice || 100,
-        maxPrice: this.profile.preferences?.maxPrice || 1000,
-        preferredSchedule: this.profile.preferences?.preferredSchedule || [],
-        preferredMode: this.profile.preferences?.preferredMode || 'Both'
-      };
+  cancelEditExperience() {
+    this.isEditingExperience = false;
+    this.editedExperienceYears = 0;
+    this.editedExperienceDescription = '';
+    this.editedTeachingStyle = '';
+  }
+
+  async saveExperience() {
+    try {
+      this.profile.experienceYears = this.editedExperienceYears;
+      this.profile.experienceDescription = this.editedExperienceDescription;
+      this.profile.teachingStyle = this.editedTeachingStyle;
+      
+      await this.authService.updateUserProfile(this.profile.uid, {
+        experienceYears: this.profile.experienceYears,
+        experienceDescription: this.profile.experienceDescription,
+        teachingStyle: this.profile.teachingStyle
+      });
+      
+      const alert = await this.alertController.create({
+        header: 'Success',
+        message: 'Experience updated successfully!',
+        buttons: ['OK']
+      });
+      await alert.present();
+      
+      this.isEditingExperience = false;
+      this.editedExperienceYears = 0;
+      this.editedExperienceDescription = '';
+      this.editedTeachingStyle = '';
+    } catch (error) {
+      console.error('Error saving experience:', error);
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Failed to update experience. Please try again.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
+  }
+
+  // Subjects & Preferences Methods
+  toggleEditSubjects() {
+    if (!this.isEditingSubjects) {
+      this.editedSubjects = [...(this.profile.subjectsTaught || [])];
+      this.editedHourlyRate = this.profile.hourlyRate || 0;
+      this.editedPreferredMode = this.profile.preferences?.preferredMode || 'Both';
+      this.editedAvailableSchedule = [...(this.profile.preferences?.availableSchedule || [])];
       
       // Extract "Other" subjects if any exist
-      const subjects = this.editedPreferences.preferredSubjects || [];
       const predefinedSubjects = ['Mathematics', 'English', 'Science', 'Filipino', 'History', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Accounting', 'Economics', 'Music', 'Art'];
-      const otherSubjects = subjects.filter((s: string) => !predefinedSubjects.includes(s));
+      const otherSubjects = this.editedSubjects.filter((s: string) => !predefinedSubjects.includes(s));
       
       if (otherSubjects.length > 0) {
         this.otherSubjects = otherSubjects.join(', ');
-        // Add "Other" to the selected subjects if not already there
-        if (!this.editedPreferences.preferredSubjects.includes('Other')) {
-          this.editedPreferences.preferredSubjects.push('Other');
+        if (!this.editedSubjects.includes('Other')) {
+          this.editedSubjects.push('Other');
         }
       } else {
         this.otherSubjects = '';
       }
     }
-    this.isEditingPreferences = !this.isEditingPreferences;
+    this.isEditingSubjects = !this.isEditingSubjects;
   }
 
   hasOtherSubject(): boolean {
-    return this.editedPreferences.preferredSubjects?.includes('Other');
+    return this.editedSubjects?.includes('Other');
   }
 
   updateOtherSubjects() {
-    // This will be called when the user types in the other subjects field
-    // The actual merging happens in savePreferences
+    // Called when user types in other subjects field
   }
 
-  cancelEditPreferences() {
-    this.isEditingPreferences = false;
-    this.editedPreferences = {};
+  cancelEditSubjects() {
+    this.isEditingSubjects = false;
+    this.editedSubjects = [];
+    this.editedHourlyRate = 0;
+    this.editedPreferredMode = 'Both';
+    this.editedAvailableSchedule = [];
     this.otherSubjects = '';
   }
 
-  async savePreferences() {
+  async saveSubjects() {
     try {
-      // Update preferences
-      if (!this.profile.preferences) {
-        this.profile.preferences = {};
-      }
-      
-      // Process preferred subjects - merge predefined and "Other"
-      let finalSubjects = [...(this.editedPreferences.preferredSubjects || [])];
-      
-      // Remove "Other" from the array
+      // Process subjects - merge predefined and "Other"
+      let finalSubjects = [...this.editedSubjects];
       finalSubjects = finalSubjects.filter(s => s !== 'Other');
       
-      // Add custom subjects from the text input if "Other" was selected
       if (this.hasOtherSubject() && this.otherSubjects.trim()) {
         const customSubjects = this.otherSubjects.split(',').map(s => s.trim()).filter(s => s);
         finalSubjects = [...finalSubjects, ...customSubjects];
       }
       
-      this.profile.preferredSubjects = finalSubjects;
-      this.profile.preferences.preferredTutorGender = this.editedPreferences.preferredTutorGender;
-      this.profile.preferences.minPrice = this.editedPreferences.minPrice;
-      this.profile.preferences.maxPrice = this.editedPreferences.maxPrice;
-      this.profile.preferences.preferredSchedule = this.editedPreferences.preferredSchedule;
-      this.profile.preferences.preferredMode = this.editedPreferences.preferredMode;
+      this.profile.subjectsTaught = finalSubjects;
+      this.profile.subjects = finalSubjects; // Keep both for compatibility
+      this.profile.hourlyRate = this.editedHourlyRate;
       
-      // Save to Firebase
+      if (!this.profile.preferences) {
+        this.profile.preferences = {};
+      }
+      this.profile.preferences.preferredMode = this.editedPreferredMode;
+      this.profile.preferences.availableSchedule = this.editedAvailableSchedule;
+      
       await this.authService.updateUserProfile(this.profile.uid, {
-        preferredSubjects: this.profile.preferredSubjects,
+        subjectsTaught: this.profile.subjectsTaught,
+        subjects: this.profile.subjects,
+        hourlyRate: this.profile.hourlyRate,
         preferences: this.profile.preferences
       });
       
       const alert = await this.alertController.create({
         header: 'Success',
-        message: 'Preferences updated successfully!',
+        message: 'Subjects and preferences updated successfully!',
         buttons: ['OK']
       });
       await alert.present();
       
-      this.isEditingPreferences = false;
-      this.editedPreferences = {};
+      this.isEditingSubjects = false;
+      this.editedSubjects = [];
+      this.editedHourlyRate = 0;
+      this.editedPreferredMode = 'Both';
+      this.editedAvailableSchedule = [];
+      this.otherSubjects = '';
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      console.error('Error saving subjects:', error);
       const alert = await this.alertController.create({
         header: 'Error',
-        message: 'Failed to update preferences. Please try again.',
+        message: 'Failed to update subjects. Please try again.',
         buttons: ['OK']
       });
       await alert.present();
@@ -312,21 +367,22 @@ export class ProfilePage implements OnInit {
   }
 
   isScheduleSelected(schedule: string): boolean {
-    return this.editedPreferences.preferredSchedule?.includes(schedule) || false;
+    return this.editedAvailableSchedule?.includes(schedule) || false;
   }
 
   toggleSchedule(schedule: string) {
-    if (!this.editedPreferences.preferredSchedule) {
-      this.editedPreferences.preferredSchedule = [];
+    if (!this.editedAvailableSchedule) {
+      this.editedAvailableSchedule = [];
     }
-    const index = this.editedPreferences.preferredSchedule.indexOf(schedule);
+    const index = this.editedAvailableSchedule.indexOf(schedule);
     if (index > -1) {
-      this.editedPreferences.preferredSchedule.splice(index, 1);
+      this.editedAvailableSchedule.splice(index, 1);
     } else {
-      this.editedPreferences.preferredSchedule.push(schedule);
+      this.editedAvailableSchedule.push(schedule);
     }
   }
 
+  // Account Management Methods
   async onChangePassword() {
     const alert = await this.alertController.create({
       header: 'Change Password',
@@ -334,7 +390,6 @@ export class ProfilePage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
-    console.log('Change Password clicked');
   }
 
   async onAccountSecurity() {
@@ -344,7 +399,6 @@ export class ProfilePage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
-    console.log('Account Security clicked');
   }
 
   async onNotificationSettings() {
@@ -354,7 +408,6 @@ export class ProfilePage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
-    console.log('Notification Settings clicked');
   }
 
   async onPrivacySettings() {
@@ -364,16 +417,15 @@ export class ProfilePage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
-    console.log('Privacy Settings clicked');
   }
 
   // Tab Navigation Methods
   onTabHome() {
-    this.router.navigate(['/client-dashboard']);
+    this.router.navigate(['/tutor-dashboard']);
   }
 
-  onTabFindTutor() {
-    this.router.navigate(['/find-tutor']);
+  onTabFindStudents() {
+    this.router.navigate(['/find-students']);
   }
 
   onTabMessages() {
@@ -385,4 +437,5 @@ export class ProfilePage implements OnInit {
     // Already on profile page
     console.log('Already on Profile page');
   }
+
 }

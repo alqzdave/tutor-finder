@@ -554,3 +554,69 @@ body.dark {
     }
   }
 }
+
+// Custom Alert Styling for Student Details
+.custom-alert {
+  .alert-wrapper {
+    max-width: 500px;
+  }
+
+  .alert-head {
+    h2 {
+      font-size: 18px !important;
+      font-weight: 700 !important;
+      color: #333 !important;
+    }
+
+    .alert-sub-title {
+      color: #999 !important;
+      font-size: 13px !important;
+      margin-top: 4px !important;
+    }
+  }
+
+  .alert-message {
+    text-align: left !important;
+    
+    .request-details-content {
+      .detail-row {
+        display: flex !important;
+        margin-bottom: 14px !important;
+        line-height: 1.5 !important;
+        
+        .detail-label {
+          font-weight: 600 !important;
+          color: #666 !important;
+          min-width: 130px !important;
+          font-size: 14px !important;
+        }
+        
+        .detail-value {
+          flex: 1 !important;
+          color: #333 !important;
+          font-size: 14px !important;
+        }
+        
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+  }
+
+  .alert-button-group {
+    button {
+      font-weight: 600 !important;
+      font-size: 15px !important;
+
+      &.alert-button-role-cancel {
+        color: #999 !important;
+      }
+      
+      &.alert-button-confirm {
+        color: #667eea !important;
+        font-weight: 700 !important;
+      }
+    }
+  }
+}

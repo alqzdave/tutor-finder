@@ -97,19 +97,28 @@ export class FindTutorPage implements OnInit {
     try {
       const tutorsFromDb = await this.authService.getAllTutors();
       
-      // Map Firebase tutor data to display format
-      this.tutors = tutorsFromDb.map((tutor: TutorProfile) => ({
-        id: tutor.uid,
-        name: tutor.displayName || `${tutor.firstName} ${tutor.lastName}`,
-        subject: tutor.subjects?.join(', ') || 'General Tutor',
-        rating: tutor.rating || 0,
-        reviews: tutor.totalReviews || 0,
-        priceRange: `${tutor.hourlyRate || 0}/hr`,
-        bio: tutor.bio || 'No bio available',
-        photoURL: tutor.photoURL || '',
-        type: 'Online',
-        isFavorite: false
-      }));
+      // Map Firebase tutor data to display format - keep all original data
+      this.tutors = tutorsFromDb.map((tutor: TutorProfile) => {
+        const fullName = tutor.fullName || tutor.displayName || `${tutor.firstName || ''} ${tutor.lastName || ''}`.trim();
+        const subjects = tutor.subjectsTaught || tutor.subjects || [];
+        const preferredMode = tutor.preferences?.preferredMode || 'Both';
+        
+        return {
+          // Keep ALL original tutor data for the modal
+          ...tutor,
+          // Add display-friendly properties
+          id: tutor.uid,
+          name: fullName,
+          subject: tutor.specialization || subjects.join(', ') || 'General Tutor',
+          rating: tutor.rating || 4.5,
+          reviews: tutor.totalReviews || 0,
+          priceRange: `₱${tutor.hourlyRate || 0}/hr`,
+          bio: tutor.bio || 'No bio available',
+          photoURL: tutor.photoURL || '',
+          type: preferredMode, // Use actual preferred mode
+          isFavorite: false
+        };
+      });
       
       this.filteredTutors = [...this.tutors];
     } catch (error) {
@@ -196,6 +205,6 @@ export class FindTutorPage implements OnInit {
   }
 
   onTabProfile() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/client/profile']);
   }
 }

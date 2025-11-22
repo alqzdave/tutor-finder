@@ -40,13 +40,22 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
-    path: 'profile',
+    path: 'client/profile',
     loadChildren: () => import('./pages/client/profile/profile.module').then( m => m.ProfilePageModule)
   },
   {
     path: 'find-tutor',
     loadChildren: () => import('./pages/client/find-tutor/find-tutor.module').then( m => m.FindTutorPageModule)
+  },
+  {
+    path: 'find-students',
+    loadChildren: () => import('./pages/tutor/find-students/find-students.module').then( m => m.FindStudentsPageModule)
+  },
+  {
+    path: 'tutor/profile',
+    loadChildren: () => import('./pages/tutor/profile/profile.module').then( m => m.ProfilePageModule)
   }
+
 ];
 
 @NgModule({

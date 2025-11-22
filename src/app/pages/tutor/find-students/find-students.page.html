@@ -1,0 +1,146 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tutor/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Find Students</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFilter()">
+        <ion-icon name="filter-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Search Bar -->
+  <ion-toolbar>
+    <ion-searchbar 
+      [(ngModel)]="searchTerm" 
+      (ionInput)="onSearch()" 
+      placeholder="Search by subject, location..."
+      animated>
+    </ion-searchbar>
+  </ion-toolbar>
+
+  <!-- Filter Chips -->
+  <ion-toolbar *ngIf="showFilters">
+    <div class="filter-chips">
+      <ion-chip [outline]="selectedMode !== 'All'" (click)="filterByMode('All')">
+        <ion-label>All</ion-label>
+      </ion-chip>
+      <ion-chip [outline]="selectedMode !== 'Online'" color="primary" (click)="filterByMode('Online')">
+        <ion-label>Online</ion-label>
+      </ion-chip>
+      <ion-chip [outline]="selectedMode !== 'Face-to-face'" color="success" (click)="filterByMode('Face-to-face')">
+        <ion-label>Face-to-face</ion-label>
+      </ion-chip>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="find-students-content">
+  <div class="container">
+    <!-- Results Count -->
+    <div class="results-header">
+      <p>{{ filteredRequests.length }} request{{ filteredRequests.length !== 1 ? 's' : '' }} available</p>
+    </div>
+
+    <!-- Student Requests List -->
+    <div class="requests-list" *ngIf="filteredRequests.length > 0">
+      <div class="request-card" *ngFor="let request of filteredRequests">
+        <div class="request-header">
+          <div class="student-info">
+            <ion-icon name="person-circle-outline" class="student-icon"></ion-icon>
+            <div>
+              <h3>{{ request.studentName }}</h3>
+              <p class="request-time">Posted {{ request.postedTime }}</p>
+            </div>
+          </div>
+          <ion-badge [color]="getModeColor(request.mode)">{{ request.mode }}</ion-badge>
+        </div>
+
+        <div class="request-details">
+          <div class="detail-item">
+            <ion-icon name="book-outline"></ion-icon>
+            <span><strong>Subject:</strong> {{ request.subject }}</span>
+          </div>
+          <div class="detail-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span><strong>Schedule:</strong> {{ request.schedule }}</span>
+          </div>
+          <div class="detail-item" *ngIf="request.location">
+            <ion-icon name="location-outline"></ion-icon>
+            <span><strong>Location:</strong> {{ request.location }}</span>
+          </div>
+          <div class="detail-item" *ngIf="request.preferredGender">
+            <ion-icon name="person-outline"></ion-icon>
+            <span><strong>Preferred Tutor:</strong> {{ request.preferredGender }}</span>
+          </div>
+          <div class="detail-item" *ngIf="request.budget">
+            <ion-icon name="cash-outline"></ion-icon>
+            <span><strong>Budget:</strong> {{ request.budget }} per hour</span>
+          </div>
+          <div class="detail-item" *ngIf="request.specialInstructions">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <span class="instructions">{{ request.specialInstructions }}</span>
+          </div>
+        </div>
+
+        <div class="request-actions">
+          <ion-button fill="outline" size="small" (click)="viewRequestDetails(request)">
+            <ion-icon slot="start" name="eye-outline"></ion-icon>
+            View Details
+          </ion-button>
+          <ion-button size="small" (click)="sendOffer(request)">
+            <ion-icon slot="start" name="send-outline"></ion-icon>
+            Send Offer
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredRequests.length === 0">
+      <ion-icon name="search-outline"></ion-icon>
+      <h3>No requests found</h3>
+      <p *ngIf="searchTerm || selectedMode !== 'All'">Try adjusting your search or filters</p>
+      <p *ngIf="!searchTerm && selectedMode === 'All'">No student requests available at the moment</p>
+      <ion-button fill="clear" (click)="clearFilters()" *ngIf="searchTerm || selectedMode !== 'All'">
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Clear Filters
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Bottom Tab Navigation -->
+<ion-footer class="bottom-tabs">
+  <ion-toolbar>
+    <div class="tab-buttons">
+      <div class="tab-item" (click)="goToHome()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="home-outline"></ion-icon>
+        </div>
+        <span>Home</span>
+      </div>
+      <div class="tab-item active">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="search"></ion-icon>
+        </div>
+        <span>Find Students</span>
+      </div>
+      <div class="tab-item" (click)="goToMessages()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-badge color="danger" class="message-badge">2</ion-badge>
+        </div>
+        <span>Messages</span>
+      </div>
+      <div class="tab-item" (click)="goToProfile()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <span>Profile</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>

@@ -1,163 +1,180 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Dashboard</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onLogout()">
-        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true" class="tutor-dashboard-content">
   <div class="dashboard-container" *ngIf="profile">
     
-    <!-- Welcome Header -->
-    <div class="welcome-header">
-      <div class="avatar-small">
-        <img *ngIf="profile.photoURL" [src]="profile.photoURL" alt="Profile">
-        <ion-icon *ngIf="!profile.photoURL" name="person-circle"></ion-icon>
+    <!-- Header Section -->
+    <div class="dashboard-header">
+      <div class="logo-container">
+        <ion-icon name="school-outline" class="logo-icon"></ion-icon>
+        <span class="app-name">Finding Tutor</span>
       </div>
-      <div class="welcome-text">
-        <h1>Welcome back, {{ profile.firstName }}!</h1>
-        <p>Here's what's happening today</p>
+      <div class="header-actions">
+        <ion-button fill="clear" class="notification-btn">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <ion-badge color="danger" class="notification-badge">3</ion-badge>
+        </ion-button>
+        <ion-button fill="clear" class="theme-toggle-btn" (click)="toggleTheme()">
+          <ion-icon [name]="isDarkMode ? 'sunny-outline' : 'moon-outline'"></ion-icon>
+        </ion-button>
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-      <ion-card class="stat-card" (click)="viewStudents()">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-          <ion-icon name="people"></ion-icon>
-        </div>
-        <div class="stat-content">
-          <h3>{{ stats.totalStudents }}</h3>
-          <p>Total Students</p>
-        </div>
-      </ion-card>
-
-      <ion-card class="stat-card" (click)="viewRequests()">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-          <ion-icon name="mail"></ion-icon>
-        </div>
-        <div class="stat-content">
-          <h3>{{ stats.activeRequests }}</h3>
-          <p>New Requests</p>
-        </div>
-      </ion-card>
-
-      <ion-card class="stat-card" (click)="manageSchedule()">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-          <ion-icon name="calendar"></ion-icon>
-        </div>
-        <div class="stat-content">
-          <h3>{{ stats.completedSessions }}</h3>
-          <p>Sessions Done</p>
-        </div>
-      </ion-card>
-
-      <ion-card class="stat-card" (click)="viewEarnings()">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-          <ion-icon name="cash"></ion-icon>
-        </div>
-        <div class="stat-content">
-          <h3>₱{{ stats.monthlyEarnings.toLocaleString() }}</h3>
-          <p>This Month</p>
-        </div>
-      </ion-card>
+    <!-- Announcement Banner -->
+    <div class="announcement-banner">
+      <ion-icon name="megaphone-outline"></ion-icon>
+      <div class="announcement-content">
+        <p class="announcement-title">Welcome back, {{ profile.firstName }} 👋</p>
+        <p class="announcement-text">Let's help students learn today!</p>
+      </div>
     </div>
 
     <!-- Quick Actions -->
-    <ion-card class="section-card">
-      <ion-card-header>
-        <ion-card-title>Quick Actions</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="actions-grid">
-          <div class="action-item" (click)="editProfile()">
-            <div class="action-icon">
-              <ion-icon name="create-outline"></ion-icon>
-            </div>
-            <span>Edit Profile</span>
-          </div>
-          <div class="action-item" (click)="manageSchedule()">
-            <div class="action-icon">
-              <ion-icon name="time-outline"></ion-icon>
-            </div>
-            <span>Schedule</span>
-          </div>
-          <div class="action-item" (click)="viewRequests()">
-            <div class="action-icon">
-              <ion-icon name="mail-unread-outline"></ion-icon>
-            </div>
-            <span>Requests</span>
-          </div>
-          <div class="action-item" (click)="viewEarnings()">
-            <div class="action-icon">
-              <ion-icon name="stats-chart-outline"></ion-icon>
-            </div>
-            <span>Analytics</span>
-          </div>
+    <div class="quick-actions">
+      <div class="action-card" (click)="findStudents()">
+        <div class="action-icon-wrapper primary-gradient">
+          <ion-icon name="search"></ion-icon>
         </div>
-      </ion-card-content>
-    </ion-card>
+        <span>Find Students</span>
+      </div>
 
-    <!-- Profile Summary -->
-    <ion-card class="section-card profile-summary">
-      <ion-card-header>
-        <ion-card-title>Your Profile</ion-card-title>
-        <ion-button fill="clear" size="small" (click)="editProfile()">
-          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      <div class="action-card" (click)="openMessages()">
+        <div class="action-icon-wrapper messages-gradient">
+          <ion-icon name="chatbubbles"></ion-icon>
+        </div>
+        <span>Messages</span>
+      </div>
+
+      <div class="action-card" (click)="viewBookings()">
+        <div class="action-icon-wrapper bookings-gradient">
+          <ion-icon name="calendar"></ion-icon>
+        </div>
+        <span>My Bookings</span>
+      </div>
+
+      <div class="action-card" (click)="editProfile()">
+        <div class="action-icon-wrapper profile-gradient">
+          <ion-icon name="person"></ion-icon>
+        </div>
+        <span>My Profile</span>
+      </div>
+
+      <div class="action-card" (click)="onLogout()">
+        <div class="action-icon-wrapper logout-gradient">
+          <ion-icon name="log-out"></ion-icon>
+        </div>
+        <span>Logout</span>
+      </div>
+    </div>
+
+    <!-- Upcoming Sessions Card -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Upcoming Sessions</h2>
+        <ion-button fill="clear" size="small" (click)="viewAllSessions()">
+          <span>View All</span>
+          <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
         </ion-button>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="profile-row">
-          <ion-icon name="star" color="warning"></ion-icon>
-          <span class="label">Rating:</span>
-          <span class="value">{{ stats.averageRating }} ⭐ ({{ stats.totalReviews }} reviews)</span>
-        </div>
-        <div class="profile-row">
-          <ion-icon name="cash-outline" color="success"></ion-icon>
-          <span class="label">Hourly Rate:</span>
-          <span class="value">₱{{ profile.hourlyRate || 0 }}/hour</span>
-        </div>
-        <div class="profile-row">
-          <ion-icon name="book-outline" color="primary"></ion-icon>
-          <span class="label">Subjects:</span>
-          <div class="subjects-inline">
-            <ion-chip *ngFor="let subject of profile.subjects" size="small" color="primary">
-              {{ subject }}
-            </ion-chip>
+      </div>
+
+      <div class="sessions-list" *ngIf="upcomingSessions.length > 0">
+        <div class="session-card" *ngFor="let session of upcomingSessions" (click)="viewSessionDetails(session)">
+          <div class="session-avatar">
+            <img *ngIf="session.studentAvatar" [src]="session.studentAvatar" [alt]="session.studentName">
+            <ion-icon *ngIf="!session.studentAvatar" name="person-circle-outline"></ion-icon>
+          </div>
+          <div class="session-info">
+            <h3>{{ session.studentName }}</h3>
+            <p class="session-subject">
+              <ion-icon name="book-outline"></ion-icon>
+              {{ session.subject }}
+            </p>
+            <p class="session-time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ session.date }} at {{ session.time }}
+            </p>
+          </div>
+          <div class="session-status">
+            <ion-badge [color]="getStatusColor(session.status)">{{ session.status }}</ion-badge>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
           </div>
         </div>
-        <div class="profile-row" *ngIf="profile.education">
-          <ion-icon name="school-outline" color="tertiary"></ion-icon>
-          <span class="label">Education:</span>
-          <span class="value">{{ profile.education }}</span>
-        </div>
-      </ion-card-content>
-    </ion-card>
+      </div>
 
-    <!-- Recent Activity -->
-    <ion-card class="section-card">
-      <ion-card-header>
-        <ion-card-title>Recent Activity</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list lines="none" class="activity-list">
-          <ion-item *ngFor="let activity of recentActivity" class="activity-item">
-            <div class="activity-icon" [style.background]="'var(--ion-color-' + activity.color + ')'">
-              <ion-icon [name]="activity.icon"></ion-icon>
+      <div class="empty-state" *ngIf="upcomingSessions.length === 0">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>You have no upcoming sessions — check student requests!</p>
+        <ion-button fill="clear" (click)="findStudents()">
+          Browse Student Requests
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Student Request Feed -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Student Requests</h2>
+        <ion-button fill="clear" size="small" (click)="viewAllRequests()">
+          <span>View All</span>
+          <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="requests-list" *ngIf="studentRequests.length > 0">
+        <div class="request-card" *ngFor="let request of studentRequests">
+          <div class="request-header">
+            <div class="student-info">
+              <ion-icon name="person-circle-outline" class="student-icon"></ion-icon>
+              <div>
+                <h3>{{ request.studentName }}</h3>
+                <p class="request-time">{{ request.postedTime }}</p>
+              </div>
             </div>
-            <ion-label>
-              <h3>{{ activity.title }}</h3>
-              <p>{{ activity.description }}</p>
-              <p class="time-text">{{ activity.time }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+            <ion-badge [color]="getModeColor(request.mode)">{{ request.mode }}</ion-badge>
+          </div>
+
+          <div class="request-details">
+            <div class="detail-item">
+              <ion-icon name="book-outline"></ion-icon>
+              <span><strong>Subject:</strong> {{ request.subject }}</span>
+            </div>
+            <div class="detail-item">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span><strong>Schedule:</strong> {{ request.schedule }}</span>
+            </div>
+            <div class="detail-item" *ngIf="request.location">
+              <ion-icon name="location-outline"></ion-icon>
+              <span><strong>Location:</strong> {{ request.location }}</span>
+            </div>
+            <div class="detail-item" *ngIf="request.specialInstructions">
+              <ion-icon name="document-text-outline"></ion-icon>
+              <span><strong>Notes:</strong> {{ request.specialInstructions }}</span>
+            </div>
+          </div>
+
+          <div class="request-actions">
+            <ion-button fill="outline" size="small" (click)="viewRequestDetails(request)">
+              <ion-icon slot="start" name="eye-outline"></ion-icon>
+              View Details
+            </ion-button>
+            <ion-button size="small" (click)="sendOffer(request)">
+              <ion-icon slot="start" name="send-outline"></ion-icon>
+              Send Offer
+            </ion-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="studentRequests.length === 0">
+        <ion-icon name="search-outline"></ion-icon>
+        <p>No student requests available at the moment.</p>
+        <ion-button fill="clear" (click)="findStudents()">
+          Refresh Requests
+          <ion-icon slot="end" name="refresh-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+
 
   </div>
 
@@ -167,3 +184,36 @@
     <p>Loading dashboard...</p>
   </div>
 </ion-content>
+
+<!-- Bottom Tab Navigation -->
+<ion-footer class="bottom-tabs">
+  <ion-toolbar>
+    <div class="tab-buttons">
+      <div class="tab-item active">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="home"></ion-icon>
+        </div>
+        <span>Home</span>
+      </div>
+      <div class="tab-item" (click)="findStudents()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="search-outline"></ion-icon>
+        </div>
+        <span>Find Students</span>
+      </div>
+      <div class="tab-item" (click)="openMessages()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-badge color="danger" class="message-badge">2</ion-badge>
+        </div>
+        <span>Messages</span>
+      </div>
+      <div class="tab-item" (click)="editProfile()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <span>Profile</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>
