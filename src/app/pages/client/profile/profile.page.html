@@ -1,0 +1,383 @@
+<ion-content>
+  <!-- 1. Profile Header -->
+  <div class="profile-header">
+    <div class="profile-photo-container">
+      <div class="profile-photo">
+        <img *ngIf="profile.photoURL" [src]="profile.photoURL" alt="Profile Photo" />
+        <ion-icon *ngIf="!profile.photoURL" name="person" class="default-avatar"></ion-icon>
+      </div>
+      <ion-button class="change-photo-btn" fill="clear" (click)="changePhoto()">
+        <ion-icon slot="start" name="camera"></ion-icon>
+        Change Photo
+      </ion-button>
+    </div>
+    
+    <div class="profile-info">
+      <h2 class="profile-name">{{ profile.fullName }}</h2>
+      <p class="profile-role">{{ profile.gradeLevel }} - Student</p>
+      <p class="profile-bio-preview" *ngIf="profile.bio">{{ profile.bio }}</p>
+    </div>
+  </div>
+
+  <!-- 2. Edit Personal Information Section -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>Personal Information</h3>
+      <ion-button *ngIf="!isEditMode" fill="clear" size="small" (click)="toggleEditMode()">
+        <ion-icon slot="start" name="create"></ion-icon>
+        Edit Info
+      </ion-button>
+    </div>
+
+    <div class="info-content" *ngIf="!isEditMode">
+      <div class="info-item">
+        <ion-icon name="person-circle" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Full Name</label>
+          <p>{{ profile.fullName }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <ion-icon name="at" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Username</label>
+          <p>{{ profile.username }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <ion-icon name="mail" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Email Address</label>
+          <p>{{ profile.email }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <ion-icon name="call" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Mobile Number</label>
+          <p>{{ profile.mobileNumber }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <ion-icon name="male-female" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Gender</label>
+          <p>{{ profile.gender }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <ion-icon name="calendar" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Birthday</label>
+          <p>{{ profile.birthday }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <ion-icon name="location" class="info-icon"></ion-icon>
+        <div class="info-details">
+          <label>Address</label>
+          <p>{{ profile.address }}, {{ profile.city }}, {{ profile.province }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Mode -->
+    <div class="edit-form" *ngIf="isEditMode">
+      <ion-item>
+        <ion-label position="stacked">Full Name</ion-label>
+        <ion-input [(ngModel)]="editedProfile.fullName" placeholder="Enter full name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Username</ion-label>
+        <ion-input [(ngModel)]="editedProfile.username" placeholder="Enter username"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email Address</ion-label>
+        <ion-input [(ngModel)]="editedProfile.email" type="email" placeholder="Enter email"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Mobile Number</ion-label>
+        <ion-input [(ngModel)]="editedProfile.mobileNumber" type="tel" placeholder="Enter mobile number"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Gender</ion-label>
+        <ion-select [(ngModel)]="editedProfile.gender" placeholder="Select gender">
+          <ion-select-option *ngFor="let gender of genderOptions" [value]="gender">{{ gender }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Birthday</ion-label>
+        <ion-input [(ngModel)]="editedProfile.birthday" type="date" placeholder="Select birthday"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Address</ion-label>
+        <ion-input [(ngModel)]="editedProfile.address" placeholder="Enter street address"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">City</ion-label>
+        <ion-input [(ngModel)]="editedProfile.city" placeholder="Enter city"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Province</ion-label>
+        <ion-input [(ngModel)]="editedProfile.province" placeholder="Enter province"></ion-input>
+      </ion-item>
+
+      <div class="edit-actions">
+        <ion-button expand="block" color="medium" fill="outline" (click)="cancelEdit()">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" color="primary" (click)="savePersonalInfo()">
+          Save Changes
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Add or Edit Bio Section -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>About Me</h3>
+      <ion-button *ngIf="!isEditingBio" fill="clear" size="small" (click)="toggleEditBio()">
+        <ion-icon slot="start" name="create"></ion-icon>
+        Edit Bio
+      </ion-button>
+    </div>
+
+    <div class="bio-content" *ngIf="!isEditingBio">
+      <div class="bio-section">
+        <label>Bio</label>
+        <p class="bio-text">{{ profile.bio || 'No bio added yet. Click Edit Bio to add one.' }}</p>
+      </div>
+
+      <div class="bio-section">
+        <label>Interests</label>
+        <div class="interests-tags">
+          <span class="interest-tag" *ngFor="let interest of profile.interests">{{ interest }}</span>
+          <span *ngIf="!profile.interests || profile.interests.length === 0" class="no-data">No interests added</span>
+        </div>
+      </div>
+
+      <div class="bio-section">
+        <label>Learning Goals</label>
+        <p class="bio-text">{{ profile.learningGoals || 'No learning goals set yet.' }}</p>
+      </div>
+    </div>
+
+    <!-- Edit Bio Mode -->
+    <div class="edit-bio-form" *ngIf="isEditingBio">
+      <ion-item>
+        <ion-label position="stacked">Bio (1-3 sentences)</ion-label>
+        <ion-textarea 
+          [(ngModel)]="editedBio" 
+          rows="4" 
+          placeholder="Tell us about yourself..."
+          maxlength="300">
+        </ion-textarea>
+      </ion-item>
+      <p class="char-count">{{ editedBio.length }}/300 characters</p>
+
+      <ion-item>
+        <ion-label position="stacked">Interests (comma-separated)</ion-label>
+        <ion-textarea 
+          [(ngModel)]="editedInterests" 
+          rows="2" 
+          placeholder="e.g., Math, Science, English, Programming">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Learning Goals</ion-label>
+        <ion-textarea 
+          [(ngModel)]="editedGoals" 
+          rows="3" 
+          placeholder="What do you want to achieve?">
+        </ion-textarea>
+      </ion-item>
+
+      <div class="edit-actions">
+        <ion-button expand="block" color="medium" fill="outline" (click)="cancelEditBio()">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" color="primary" (click)="saveBio()">
+          Save Bio
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Preferences Section -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>Preferences</h3>
+      <ion-button *ngIf="!isEditingPreferences" fill="clear" size="small" (click)="toggleEditPreferences()">
+        <ion-icon slot="start" name="create"></ion-icon>
+        Edit Preferences
+      </ion-button>
+    </div>
+
+    <div class="preferences-content" *ngIf="!isEditingPreferences">
+      <div class="pref-item">
+        <ion-icon name="person" class="pref-icon"></ion-icon>
+        <div class="pref-details">
+          <label>Preferred Tutor Gender</label>
+          <p>{{ profile.preferences?.preferredTutorGender || 'Any' }}</p>
+        </div>
+      </div>
+
+      <div class="pref-item">
+        <ion-icon name="cash" class="pref-icon"></ion-icon>
+        <div class="pref-details">
+          <label>Price Range</label>
+          <p>₱{{ profile.preferences?.minPrice || 100 }} - ₱{{ profile.preferences?.maxPrice || 1000 }} per hour</p>
+        </div>
+      </div>
+
+      <div class="pref-item">
+        <ion-icon name="time" class="pref-icon"></ion-icon>
+        <div class="pref-details">
+          <label>Preferred Schedule</label>
+          <div class="schedule-tags">
+            <span class="schedule-tag" *ngFor="let schedule of profile.preferences?.preferredSchedule">{{ schedule }}</span>
+            <span *ngIf="!profile.preferences?.preferredSchedule || profile.preferences?.preferredSchedule?.length === 0" class="no-data">No schedule preference set</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Preferences Mode -->
+    <div class="edit-preferences-form" *ngIf="isEditingPreferences">
+      <ion-item>
+        <ion-label position="stacked">Preferred Tutor Gender</ion-label>
+        <ion-select [(ngModel)]="editedPreferences.preferredTutorGender" placeholder="Select gender preference">
+          <ion-select-option *ngFor="let gender of tutorGenderOptions" [value]="gender">{{ gender }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Minimum Price (₱/hour)</ion-label>
+        <ion-input [(ngModel)]="editedPreferences.minPrice" type="number" placeholder="100"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Maximum Price (₱/hour)</ion-label>
+        <ion-input [(ngModel)]="editedPreferences.maxPrice" type="number" placeholder="1000"></ion-input>
+      </ion-item>
+
+      <div class="schedule-selector">
+        <label>Preferred Schedule Availability</label>
+        <div class="schedule-chips">
+          <ion-chip 
+            *ngFor="let schedule of scheduleOptions" 
+            [color]="isScheduleSelected(schedule) ? 'primary' : 'medium'"
+            (click)="toggleSchedule(schedule)">
+            <ion-icon [name]="isScheduleSelected(schedule) ? 'checkmark-circle' : 'ellipse-outline'"></ion-icon>
+            <ion-label>{{ schedule }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <div class="edit-actions">
+        <ion-button expand="block" color="medium" fill="outline" (click)="cancelEditPreferences()">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" color="primary" (click)="savePreferences()">
+          Save Preferences
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Account Management Section -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>Account Management</h3>
+    </div>
+
+    <div class="account-management-content">
+      <div class="management-item" (click)="onChangePassword()">
+        <div class="management-left">
+          <ion-icon name="key" class="management-icon"></ion-icon>
+          <div class="management-details">
+            <h4>Change Password</h4>
+            <p>Update your account password</p>
+          </div>
+        </div>
+        <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+      </div>
+
+      <div class="management-item" (click)="onAccountSecurity()">
+        <div class="management-left">
+          <ion-icon name="shield-checkmark" class="management-icon"></ion-icon>
+          <div class="management-details">
+            <h4>Account Security</h4>
+            <p>Two-factor authentication & login activity</p>
+          </div>
+        </div>
+        <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+      </div>
+
+      <div class="management-item" (click)="onNotificationSettings()">
+        <div class="management-left">
+          <ion-icon name="notifications" class="management-icon"></ion-icon>
+          <div class="management-details">
+            <h4>Notification Settings</h4>
+            <p>Manage push notifications & email alerts</p>
+          </div>
+        </div>
+        <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+      </div>
+
+      <div class="management-item" (click)="onPrivacySettings()">
+        <div class="management-left">
+          <ion-icon name="lock-closed" class="management-icon"></ion-icon>
+          <div class="management-details">
+            <h4>Privacy Settings</h4>
+            <p>Control your data & visibility</p>
+          </div>
+        </div>
+        <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Spacing -->
+  <div style="height: 80px;"></div>
+</ion-content>
+
+<!-- Bottom Tab Navigation -->
+<ion-footer>
+  <ion-toolbar class="bottom-tabs">
+    <div class="tab-container">
+      <div class="tab-item" (click)="onTabHome()">
+        <ion-icon name="home-outline"></ion-icon>
+        <span>Home</span>
+      </div>
+      <div class="tab-item" (click)="onTabFindTutor()">
+        <ion-icon name="search-outline"></ion-icon>
+        <span>Find Tutor</span>
+      </div>
+      <div class="tab-item" (click)="onTabMessages()">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <span>Messages</span>
+      </div>
+      <div class="tab-item active" (click)="onTabProfile()">
+        <ion-icon name="person"></ion-icon>
+        <span>Profile</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>

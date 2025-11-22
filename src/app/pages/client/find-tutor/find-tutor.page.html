@@ -1,0 +1,116 @@
+<ion-content>
+  <!-- 1. Search Bar Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <ion-searchbar 
+        class="custom-searchbar"
+        [(ngModel)]="searchQuery"
+        (ionInput)="onSearch($event)"
+        placeholder="Search tutors, subjects, topics…"
+        search-icon="search"
+        animated="true">
+      </ion-searchbar>
+      <ion-button fill="clear" class="filter-btn" (click)="openFilters()">
+        <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- 2. Category Shortcuts (Horizontal Scroll) -->
+  <div class="category-section">
+    <div class="category-scroll">
+      <div 
+        class="category-chip" 
+        *ngFor="let category of categories"
+        [class.active]="selectedCategory === category.id"
+        (click)="selectCategory(category.id)">
+        <ion-icon [name]="category.icon"></ion-icon>
+        <span>{{ category.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder for tutor results -->
+  <div class="results-placeholder" *ngIf="filteredTutors.length === 0">
+    <ion-icon name="search-outline" class="placeholder-icon"></ion-icon>
+    <p>No tutors found. Try adjusting your search.</p>
+  </div>
+
+  <!-- 4. Tutor List (Card Design) -->
+  <div class="tutors-list" *ngIf="filteredTutors.length > 0">
+    <div class="tutor-card" *ngFor="let tutor of filteredTutors">
+      <!-- Tutor Header -->
+      <div class="tutor-header" (click)="viewTutorProfile(tutor)">
+        <div class="tutor-avatar">
+          <img *ngIf="tutor.photoURL" [src]="tutor.photoURL" alt="{{ tutor.name }}">
+          <ion-icon *ngIf="!tutor.photoURL" name="person-circle"></ion-icon>
+        </div>
+        <div class="tutor-info">
+          <h3>{{ tutor.name }}</h3>
+          <p class="subject">{{ tutor.subject }}</p>
+          <div class="rating-price">
+            <div class="rating">
+              <ion-icon name="star" color="warning"></ion-icon>
+              <span>{{ tutor.rating }}</span>
+              <span class="reviews">({{ tutor.reviews }})</span>
+            </div>
+            <div class="price">₱{{ tutor.priceRange }}</div>
+          </div>
+        </div>
+        <ion-button fill="clear" class="favorite-btn" (click)="toggleFavorite(tutor, $event)">
+          <ion-icon [name]="tutor.isFavorite ? 'heart' : 'heart-outline'" [color]="tutor.isFavorite ? 'danger' : 'medium'"></ion-icon>
+        </ion-button>
+      </div>
+
+      <!-- Tutor Details -->
+      <div class="tutor-details">
+        <p class="bio">{{ tutor.bio }}</p>
+        <div class="tutor-meta">
+          <ion-chip [color]="tutor.type === 'Online' ? 'primary' : 'success'" outline="true">
+            <ion-icon [name]="tutor.type === 'Online' ? 'videocam-outline' : 'people-outline'"></ion-icon>
+            <ion-label>{{ tutor.type }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <ion-button expand="block" color="primary" (click)="viewTutorProfile(tutor)">
+        <ion-icon slot="start" name="eye-outline"></ion-icon>
+        View Profile
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Bottom Tab Navigation -->
+<ion-footer class="bottom-tabs">
+  <ion-toolbar>
+    <div class="tab-buttons">
+      <div class="tab-item" (click)="onTabHome()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="home-outline"></ion-icon>
+        </div>
+        <span>Home</span>
+      </div>
+      <div class="tab-item active">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="search"></ion-icon>
+        </div>
+        <span>Find Tutor</span>
+      </div>
+      <div class="tab-item" (click)="onTabMessages()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-badge color="danger" class="message-badge">2</ion-badge>
+        </div>
+        <span>Messages</span>
+      </div>
+      <div class="tab-item" (click)="onTabProfile()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <span>Profile</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>

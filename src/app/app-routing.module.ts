@@ -38,6 +38,14 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./pages/client/profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'find-tutor',
+    loadChildren: () => import('./pages/client/find-tutor/find-tutor.module').then( m => m.FindTutorPageModule)
   }
 ];
 

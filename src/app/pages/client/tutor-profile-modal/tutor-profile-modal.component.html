@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Tutor Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Tutor Header Section -->
+  <div class="profile-header">
+    <div class="avatar-section">
+      <div class="tutor-avatar">
+        <img *ngIf="tutor?.photoURL" [src]="tutor.photoURL" alt="{{ tutor?.name }}">
+        <ion-icon *ngIf="!tutor?.photoURL" name="person-circle"></ion-icon>
+      </div>
+      <div class="rating-badge">
+        <ion-icon name="star" color="warning"></ion-icon>
+        <span>{{ tutor?.rating }}</span>
+      </div>
+    </div>
+    <h2>{{ tutor?.name }}</h2>
+    <p class="subject">{{ tutor?.subject }}</p>
+    <div class="meta-info">
+      <ion-chip color="primary" outline="true">
+        <ion-icon [name]="tutor?.type === 'Online' ? 'videocam-outline' : 'people-outline'"></ion-icon>
+        <ion-label>{{ tutor?.type }}</ion-label>
+      </ion-chip>
+      <div class="price-tag">₱{{ tutor?.priceRange }}</div>
+    </div>
+  </div>
+
+  <!-- About Me Section -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="person-outline"></ion-icon>
+      About Me
+    </h3>
+    <p>{{ tutor?.bio }}</p>
+  </div>
+
+  <!-- Experience Section -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="briefcase-outline"></ion-icon>
+      Experience
+    </h3>
+    <p>{{ tutorProfile.experience }}</p>
+    <p class="education">{{ tutorProfile.education }}</p>
+  </div>
+
+  <!-- Subjects Taught -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="book-outline"></ion-icon>
+      Subjects Taught
+    </h3>
+    <div class="subjects-list">
+      <ion-chip *ngFor="let subject of tutorProfile.subjects" color="secondary">
+        <ion-label>{{ subject }}</ion-label>
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Teaching Style -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="bulb-outline"></ion-icon>
+      Teaching Style
+    </h3>
+    <p>{{ tutorProfile.teachingStyle }}</p>
+  </div>
+
+  <!-- Schedule Availability -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="calendar-outline"></ion-icon>
+      Schedule Availability
+    </h3>
+    <div class="schedule-list">
+      <div class="schedule-item" *ngFor="let slot of tutorProfile.schedule" [class.unavailable]="!slot.available">
+        <div class="day">{{ slot.day }}</div>
+        <div class="time">{{ slot.time }}</div>
+        <ion-icon [name]="slot.available ? 'checkmark-circle' : 'close-circle'" 
+                  [color]="slot.available ? 'success' : 'medium'"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ratings & Reviews -->
+  <div class="profile-section">
+    <h3>
+      <ion-icon name="star-outline"></ion-icon>
+      Ratings & Reviews ({{ tutor?.reviews }})
+    </h3>
+    <div class="reviews-list">
+      <div class="review-card" *ngFor="let review of tutorProfile.reviews">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <ion-icon name="person-circle" color="medium"></ion-icon>
+            <span class="reviewer-name">{{ review.studentName }}</span>
+          </div>
+          <span class="review-date">{{ review.date }}</span>
+        </div>
+        <div class="review-rating">
+          <ion-icon *ngFor="let star of getStarArray(review.rating)" 
+                    name="star" 
+                    color="warning"></ion-icon>
+        </div>
+        <p class="review-comment">{{ review.comment }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Spacing -->
+  <div style="height: 100px;"></div>
+</ion-content>
+
+<!-- Fixed Bottom Actions -->
+<ion-footer>
+  <ion-toolbar>
+    <div class="action-buttons">
+      <ion-button expand="block" fill="outline" color="primary" (click)="messageTutor()">
+        <ion-icon slot="start" name="chatbubble-outline"></ion-icon>
+        Message Tutor
+      </ion-button>
+      <ion-button expand="block" color="primary" (click)="bookNow()">
+        <ion-icon slot="start" name="calendar-outline"></ion-icon>
+        Book Now
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

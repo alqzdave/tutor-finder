@@ -1,79 +1,251 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Find Tutors</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onLogout()">
-        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar class="custom-header">
+    <div class="header-content">
+      <div class="greeting-section">
+        <div class="logo-container">
+          <ion-icon name="school" class="logo-icon"></ion-icon>
+          <h1 class="app-name">Finding Tutor</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <ion-button fill="clear" class="notification-btn" (click)="onNotificationClick()">
+          <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+          <ion-badge color="danger" class="notification-badge">3</ion-badge>
+        </ion-button>
+        <ion-button fill="clear" class="theme-toggle-btn" (click)="toggleTheme()">
+          <ion-icon slot="icon-only" [name]="isDarkMode ? 'sunny-outline' : 'moon-outline'"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="dashboard-content">
-  <div class="cards-container">
-    <!-- No More Tutors -->
-    <div class="no-tutors" *ngIf="!currentTutor">
-      <ion-icon name="checkmark-circle-outline" class="check-icon"></ion-icon>
-      <h2>No More Tutors</h2>
-      <p>Check back later for more tutors!</p>
+  <div class="content-container" *ngIf="profile">
+    
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+      <div class="banner-content">
+        <div class="banner-icon">
+          <ion-icon name="megaphone"></ion-icon>
+        </div>
+        <div class="banner-text">
+          <h3>New Tutors Available! 🎉</h3>
+          <p>Book your first session today and get 10% off</p>
+        </div>
+      </div>
     </div>
 
-    <!-- Tutor Card -->
-    <div class="tutor-card" 
-         *ngIf="currentTutor"
-         [ngStyle]="currentCardStyle"
-         (pan)="onPan($event)"
-         (panend)="onPanEnd($event)">
-      
-      <div class="card-header">
-        <div class="tutor-image">
-          <img *ngIf="currentTutor.photoURL" [src]="currentTutor.photoURL" alt="Tutor Photo" />
-          <ion-icon *ngIf="!currentTutor.photoURL" name="person-circle-outline"></ion-icon>
+    <!-- Quick Action Buttons -->
+    <div class="quick-actions">
+      <div class="action-card" (click)="onFindTutor()">
+        <div class="action-icon-wrapper primary-gradient">
+          <ion-icon name="search"></ion-icon>
         </div>
+        <span>Find a Tutor</span>
       </div>
 
-      <div class="card-content">
-        <h2 class="tutor-name">{{ currentTutor.firstName }} {{ currentTutor.lastName }}</h2>
-        
+      <div class="action-card" (click)="onMessages()">
+        <div class="action-icon-wrapper messages-gradient">
+          <ion-icon name="chatbubbles"></ion-icon>
+        </div>
+        <span>Messages</span>
+      </div>
+
+      <div class="action-card" (click)="onBookings()">
+        <div class="action-icon-wrapper bookings-gradient">
+          <ion-icon name="calendar"></ion-icon>
+        </div>
+        <span>My Bookings</span>
+      </div>
+
+      <div class="action-card" (click)="onFavorites()">
+        <div class="action-icon-wrapper favorites-gradient">
+          <ion-icon name="heart"></ion-icon>
+        </div>
+        <span>Favorites</span>
+      </div>
+
+      <div class="action-card" (click)="onProfile()">
+        <div class="action-icon-wrapper profile-gradient">
+          <ion-icon name="person"></ion-icon>
+        </div>
+        <span>My Profile</span>
+      </div>
+
+      <div class="action-card" (click)="onLogout()">
+        <div class="action-icon-wrapper logout-gradient">
+          <ion-icon name="log-out"></ion-icon>
+        </div>
+        <span>Logout</span>
+      </div>
+    </div>
+
+    <!-- Popular Subjects Section -->
+    <div class="section-header">
+      <h2>Popular Subjects</h2>
+      <span class="see-all">See All</span>
+    </div>
+    
+    <div class="subjects-carousel">
+      <div class="subject-card" *ngFor="let subject of popularSubjects">
+        <div class="subject-icon" [style.background]="subject.gradient">
+          <ion-icon [name]="subject.icon"></ion-icon>
+        </div>
+        <span class="subject-name">{{ subject.name }}</span>
+      </div>
+    </div>
+
+    <!-- Recommended Tutors Section -->
+    <div class="section-header">
+      <h2>Recommended Tutors</h2>
+      <span class="see-all">View All</span>
+    </div>
+
+    <div class="tutors-list">
+      <div class="tutor-card" *ngFor="let tutor of recommendedTutors">
+        <div class="tutor-avatar">
+          <img *ngIf="tutor.photo" [src]="tutor.photo" alt="{{ tutor.name }}">
+          <ion-icon *ngIf="!tutor.photo" name="person-circle"></ion-icon>
+        </div>
         <div class="tutor-info">
-          <div class="info-item">
-            <ion-icon name="cash-outline"></ion-icon>
-            <span>₱{{ currentTutor.hourlyRate }}/hour</span>
-          </div>
-          <div class="info-item" *ngIf="currentTutor.education">
-            <ion-icon name="school-outline"></ion-icon>
-            <span>{{ currentTutor.education }}</span>
+          <h3>{{ tutor.name }}</h3>
+          <p class="subject">{{ tutor.subject }}</p>
+          <div class="tutor-meta">
+            <div class="rating">
+              <ion-icon name="star" color="warning"></ion-icon>
+              <span>{{ tutor.rating }}</span>
+              <span class="reviews">({{ tutor.reviews }})</span>
+            </div>
+            <div class="rate">₱{{ tutor.hourlyRate }}/hr</div>
           </div>
         </div>
+        <ion-button fill="outline" size="small" class="view-btn" (click)="onViewTutorProfile(tutor)">
+          View
+        </ion-button>
+      </div>
+    </div>
 
-        <div class="subjects">
-          <ion-chip *ngFor="let subject of currentTutor.subjects" color="primary">
-            {{ subject }}
-          </ion-chip>
+    <!-- Recent Activity Section -->
+    <div class="section-header">
+      <h2>Continue Learning</h2>
+    </div>
+
+    <div class="activity-list">
+      <div class="activity-card" *ngFor="let activity of recentActivities" (click)="onActivityClick(activity)">
+        <div class="activity-icon-wrapper" [ngClass]="activity.color + '-activity'">
+          <ion-icon [name]="activity.icon"></ion-icon>
         </div>
+        <div class="activity-info">
+          <h4>{{ activity.title }}</h4>
+          <p>{{ activity.description }}</p>
+        </div>
+        <div class="activity-action">
+          <span>{{ activity.action }}</span>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
 
-        <p class="tutor-bio" *ngIf="currentTutor.bio">{{ currentTutor.bio }}</p>
-      </div>
+    <!-- Upcoming Session Card -->
+    <div class="section-header">
+      <h2>Your Next Session</h2>
+    </div>
 
-      <!-- Swipe Indicators -->
-      <div class="swipe-indicator reject">
-        <ion-icon name="close-circle"></ion-icon>
-        <span>PASS</span>
+    <div class="upcoming-session-card" *ngIf="hasUpcomingSession">
+      <div class="session-header">
+        <div class="session-avatar">
+          <img *ngIf="upcomingSession.photo" [src]="upcomingSession.photo" alt="{{ upcomingSession.tutorName }}">
+          <ion-icon *ngIf="!upcomingSession.photo" name="person-circle"></ion-icon>
+        </div>
+        <div class="session-info">
+          <h3>{{ upcomingSession.subject }}</h3>
+          <p class="tutor-name">with {{ upcomingSession.tutorName }}</p>
+        </div>
+        <ion-badge color="success" class="countdown-badge">{{ upcomingSession.countdown }}</ion-badge>
       </div>
-      <div class="swipe-indicator like">
-        <ion-icon name="heart-circle"></ion-icon>
-        <span>LIKE</span>
+      <div class="session-details">
+        <div class="detail-item">
+          <ion-icon name="calendar-outline" color="primary"></ion-icon>
+          <span>{{ upcomingSession.date }}</span>
+        </div>
+        <div class="detail-item">
+          <ion-icon name="time-outline" color="primary"></ion-icon>
+          <span>{{ upcomingSession.time }}</span>
+        </div>
       </div>
+      <ion-button expand="block" class="session-btn">
+        <ion-icon slot="start" name="videocam-outline"></ion-icon>
+        Join Session
+      </ion-button>
+    </div>
+
+    <div class="no-session-card" *ngIf="!hasUpcomingSession">
+      <ion-icon name="calendar-outline" class="empty-icon"></ion-icon>
+      <h3>No upcoming sessions yet</h3>
+      <p>Start learning today!</p>
+      <ion-button fill="outline" (click)="onFindTutor()">
+        <ion-icon slot="start" name="search-outline"></ion-icon>
+        Find a Tutor
+      </ion-button>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-section">
+      <div class="footer-links">
+        <div class="footer-link" (click)="onHelpCenter()">
+          <ion-icon name="help-circle-outline"></ion-icon>
+          <span>Help Center</span>
+        </div>
+        <div class="footer-link" (click)="onReportTutor()">
+          <ion-icon name="flag-outline"></ion-icon>
+          <span>Report a Tutor</span>
+        </div>
+        <div class="footer-link" (click)="onSettings()">
+          <ion-icon name="settings-outline"></ion-icon>
+          <span>Settings</span>
+        </div>
+      </div>
+      <p class="footer-text">TutorMatch © 2025. All rights reserved.</p>
     </div>
   </div>
 
-  <!-- Action Buttons -->
-  <div class="action-buttons" *ngIf="currentTutor">
-    <ion-button class="reject-btn" shape="round" (click)="animateSwipe('left')">
-      <ion-icon slot="icon-only" name="close"></ion-icon>
-    </ion-button>
-    <ion-button class="like-btn" shape="round" (click)="animateSwipe('right')">
-      <ion-icon slot="icon-only" name="heart"></ion-icon>
-    </ion-button>
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="!profile">
+    <ion-spinner color="primary"></ion-spinner>
+    <p>Loading your dashboard...</p>
   </div>
 </ion-content>
+
+<!-- Bottom Tab Navigation -->
+<ion-footer class="bottom-tabs">
+  <ion-toolbar>
+    <div class="tab-buttons">
+      <div class="tab-item active">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="home"></ion-icon>
+        </div>
+        <span>Home</span>
+      </div>
+      <div class="tab-item" (click)="onFindTutor()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="search-outline"></ion-icon>
+        </div>
+        <span>Find Tutor</span>
+      </div>
+      <div class="tab-item" (click)="onMessages()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+          <ion-badge color="danger" class="message-badge">2</ion-badge>
+        </div>
+        <span>Messages</span>
+      </div>
+      <div class="tab-item" (click)="onProfile()">
+        <div class="tab-icon-wrapper">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <span>Profile</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>

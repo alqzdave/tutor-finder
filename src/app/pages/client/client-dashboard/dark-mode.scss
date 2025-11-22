@@ -1,0 +1,163 @@
+// Dark Mode Styles for Client Dashboard
+
+body.dark {
+  .dashboard-content {
+    --background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
+  .custom-header {
+    --background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+  }
+
+  .header-content {
+    .greeting-text,
+    .user-name {
+      color: #e0e0e0;
+    }
+  }
+
+  .promo-banner {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    color: #e0e0e0;
+
+    .banner-text {
+      h3, p {
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  .quick-actions .action-card {
+    background: #2d3748;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    span {
+      color: #e0e0e0;
+    }
+  }
+
+  .section-header {
+    h2 {
+      color: #e0e0e0;
+    }
+
+    .view-all {
+      color: #a0aec0;
+    }
+  }
+
+  .subject-card {
+    background: #2d3748;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+    h4 {
+      color: #e0e0e0;
+    }
+  }
+
+  .tutor-card {
+    background: #2d3748;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    .tutor-info {
+      h3 {
+        color: #e0e0e0;
+      }
+
+      p {
+        color: #a0aec0;
+      }
+    }
+
+    .tutor-meta {
+      .rating {
+        color: #e0e0e0;
+      }
+
+      .price {
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  .activity-card {
+    background: #2d3748;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+    .activity-details {
+      h4 {
+        color: #e0e0e0;
+      }
+
+      p {
+        color: #a0aec0;
+      }
+    }
+
+    .activity-time {
+      color: #a0aec0;
+    }
+  }
+
+  .upcoming-session-card,
+  .no-session-card {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+
+    h3, p, span {
+      color: #e0e0e0;
+    }
+  }
+
+  .footer-section {
+    background: #2d3748;
+    border-top: 1px solid #4a5568;
+
+    .footer-links {
+      .footer-link {
+        color: #a0aec0;
+
+        &:hover {
+          color: #e0e0e0;
+        }
+      }
+    }
+
+    .footer-text {
+      color: #718096;
+    }
+  }
+
+  .bottom-tabs {
+    ion-toolbar {
+      --background: #1a1a2e;
+      box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .tab-buttons .tab-item {
+      .tab-icon-wrapper ion-icon {
+        color: #a0aec0;
+      }
+
+      span {
+        color: #a0aec0;
+      }
+
+      &.active {
+        .tab-icon-wrapper ion-icon {
+          color: #667eea;
+        }
+
+        span {
+          color: #667eea;
+        }
+      }
+
+      &:hover:not(.active) {
+        .tab-icon-wrapper ion-icon,
+        span {
+          color: #667eea;
+        }
+      }
+    }
+  }
+}
